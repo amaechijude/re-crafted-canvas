@@ -10,13 +10,14 @@ import {
   Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation, Link } from "react-router-dom";
 
 const navigation = [
-  { name: "Dashboard", icon: LayoutDashboard, current: true },
-  { name: "User", icon: Users, current: false },
-  { name: "Staff", icon: UserCheck, current: false },
-  { name: "Dropoff", icon: MapPin, current: false },
-  { name: "Trucks", icon: Truck, current: false },
+  { name: "Dashboard", icon: LayoutDashboard, href: "/" },
+  { name: "User", icon: Users, href: "/users" },
+  { name: "Staff", icon: UserCheck, href: "/staff" },
+  { name: "Dropoff", icon: MapPin, href: "/dropoff" },
+  { name: "Trucks", icon: Truck, href: "/trucks" },
 ];
 
 const bottomNavigation = [
@@ -25,6 +26,8 @@ const bottomNavigation = [
 ];
 
 export function Sidebar() {
+  const location = useLocation();
+
   return (
     <div className="flex h-screen w-64 flex-col bg-sidebar">
       {/* Logo */}
@@ -37,19 +40,25 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-2 px-4">
-        {navigation.map((item) => (
-          <Button
-            key={item.name}
-            variant={item.current ? "default" : "ghost"}
-            className={cn(
-              "w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              item.current && "bg-primary text-primary-foreground hover:bg-primary/90"
-            )}
-          >
-            <item.icon className="h-5 w-5" />
-            {item.name}
-          </Button>
-        ))}
+        {navigation.map((item) => {
+          const isActive = location.pathname === item.href;
+          return (
+            <Button
+              key={item.name}
+              variant={isActive ? "default" : "ghost"}
+              className={cn(
+                "w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                isActive && "bg-primary text-primary-foreground hover:bg-primary/90"
+              )}
+              asChild
+            >
+              <Link to={item.href}>
+                <item.icon className="h-5 w-5" />
+                {item.name}
+              </Link>
+            </Button>
+          );
+        })}
       </nav>
 
       {/* Bottom Navigation */}
